@@ -41,7 +41,6 @@ app.get("/api/carData", async (req, res) => {
   const carData = await Car.find({}).select(
     "name price year added modified -_id"
   );
-
   res.send(JSON.stringify(carData));
 });
 
