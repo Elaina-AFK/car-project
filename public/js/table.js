@@ -2,7 +2,7 @@ async function Table() {
   const carData = await getData();
   const tableNode = document.createElement("table");
   tableNode.classList = "table table-striped table-hover";
-  const titleList = ["name", "age", "very"];
+  const titleList = ["name", "price", "year", "Added Date", "Modified Date"];
   tableNode.appendChild(thead(titleList));
   tableNode.appendChild(tbody(carData));
 
@@ -56,7 +56,7 @@ function td(data) {
 async function getData() {
   const res = await fetch("/api/carData");
   const data = await res.json();
-  return data;
+  return await data;
 }
 
 export default { Table };
