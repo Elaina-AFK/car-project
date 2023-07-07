@@ -1,44 +1,17 @@
-function Table() {
-  const testData = [
-    {
-      name: "A",
-      age: 5,
-      type: "hyper!",
-    },
-    {
-      name: "A",
-      age: 5,
-      type: "hyper!",
-    },
-    {
-      name: "A",
-      age: 5,
-      type: "hyper!",
-    },
-    {
-      name: "A",
-      age: 5,
-      type: "hyper!",
-    },
-    {
-      name: "A",
-      age: 5,
-      type: "hyper!",
-    },
-  ];
-
+async function Table() {
+  const carData = await getData();
   const tableNode = document.createElement("table");
-  tableNode.appendChild(thead(testData[0]));
-  tableNode.appendChild(tbody(testData));
+  const titleList = ["name", "age", "very"];
+  tableNode.appendChild(thead(titleList));
+  tableNode.appendChild(tbody(carData));
 
   return tableNode;
 }
 
-function thead(firstDataObject) {
+function thead(titleList) {
   const theadNode = document.createElement("thead");
   const trHeadNode = document.createElement("tr");
-  const keys = Object.keys(firstDataObject);
-  keys.forEach((element) => {
+  titleList.forEach((element) => {
     const thNode = th(element);
     trHeadNode.appendChild(thNode);
   });
@@ -77,6 +50,12 @@ function td(data) {
   const textNode = document.createTextNode(data);
   tdNode.appendChild(textNode);
   return tdNode;
+}
+
+async function getData() {
+  const res = await fetch("/api/carData");
+  const data = await res.json();
+  return data;
 }
 
 export default { Table };
