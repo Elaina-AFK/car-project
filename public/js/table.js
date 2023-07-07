@@ -1,6 +1,7 @@
 async function Table() {
   const carData = await getData();
   const tableNode = document.createElement("table");
+  tableNode.classList = "table table-striped table-hover";
   const titleList = ["name", "age", "very"];
   tableNode.appendChild(thead(titleList));
   tableNode.appendChild(tbody(carData));

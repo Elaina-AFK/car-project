@@ -1,3 +1,5 @@
 import Table from "./table.js";
 
-document.body.appendChild(await Table.Table());
+const mainDiv = document.getElementById("main");
+
+mainDiv.appendChild(await Table.Table());
