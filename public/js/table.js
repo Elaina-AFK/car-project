@@ -18,8 +18,8 @@ function createTable(carData) {
     { name: "Name", keyName: "name", type: "String" },
     { name: "Price", keyName: "price", type: "Number" },
     { name: "Year", keyName: "year", type: "Number" },
-    { name: "Added Date", keyName: "added", type: "Number" },
-    { name: "Modified Date", keyName: "modified", type: "Number" },
+    { name: "Added Date", keyName: "added", type: "Date" },
+    { name: "Modified Date", keyName: "modified", type: "Date" },
   ];
   tableNode.appendChild(thead(titleList, carData));
   tableNode.appendChild(tbody(carData));
@@ -68,7 +68,7 @@ function th(title, data) {
   const thNode = document.createElement("th");
   const textNode = document.createTextNode(title.name);
   thNode.appendChild(textNode);
-  if (title.type === "Number") {
+  if (title.type === "Number" || title.type === "Date") {
     thNode.addEventListener("click", () => {
       let sorted = util.sortNumber(data, title.keyName);
       console.log("sorted: ", sorted);
