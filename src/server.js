@@ -44,6 +44,12 @@ app.get("/api/carData", async (req, res) => {
   res.send(JSON.stringify(carData));
 });
 
+app.post("/api/carData", async (req, res) => {
+  const userData = req.body;
+  console.log(userData);
+  res.send(JSON.stringify({ message: `got ${req.body}` }));
+});
+
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });

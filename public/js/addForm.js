@@ -1,3 +1,5 @@
+import api from "./api.js";
+
 function addForm() {
   const nameId = "nameField";
   const priceId = "priceField";
@@ -21,9 +23,33 @@ function addForm() {
     submit
   );
 
-  form.onSubmit = () => console.log("Heyyyyyy!");
+  form.addEventListener("submit", async (e) =>
+    getData(e, { nameId, priceId, yearId })
+  );
 
   return form;
+}
+
+async function getData(e, { nameId, priceId, yearId }) {
+  e.preventDefault();
+  const name = document.getElementById(nameId);
+  const price = document.getElementById(priceId);
+  const year = document.getElementById(yearId);
+  const data = {
+    name: name.value,
+    price: price.value,
+    year: year.value,
+  };
+  name.value = "";
+  price.value = "";
+  year.value = "2023";
+  const response = await postData(data);
+  console.log(response.message);
+}
+
+async function postData(dataObject) {
+  const response = await api.htmlMethod("POST", "/api/carData", dataObject);
+  return response;
 }
 
 function yearSelector(id) {
