@@ -22,14 +22,9 @@ function isEmpty(value) {
   return value === "";
 }
 
-function isNaN(value) {
-  return Math.isNaN(value);
-}
-
 export default {
   sortString,
   sortNumber,
   formatRelativeTime,
   isEmpty,
-  isNaN,
 };

@@ -10,9 +10,12 @@ function addForm() {
   const nameField = createFieldWithId(nameId);
   const priceLabel = createLabelFor(priceId, "Price : ");
   const priceField = createFieldWithId(priceId);
+  priceField.type = "number";
+  priceField.min = 0;
   const yearLabel = createLabelFor(yearId, "Year : ");
   const yearOption = yearSelector(yearId);
   const submit = submitButton();
+  const verifyTextNode = verifyText();
 
   form.append(
     nameLabel,
@@ -21,7 +24,8 @@ function addForm() {
     priceField,
     yearLabel,
     yearOption,
-    submit
+    submit,
+    verifyTextNode
   );
 
   form.addEventListener("submit", async (e) =>
@@ -35,15 +39,16 @@ async function isAlrExist(name) {
   const response = await api.htmlMethod("POST", "/api/carData/carName", {
     name: name,
   });
-  return response.status;
+  return await response.status;
 }
 
-function verifyName(name) {
-  return !util.isEmpty(name) && !isAlrExist(name);
+async function verifyName(name) {
+  const alrExist = await isAlrExist(name);
+  return !util.isEmpty(name) && !alrExist;
 }
 
 function verifyPrice(price) {
-  return !util.isEmpty(price) && !util.isNaN(price);
+  return !util.isEmpty(price) && !isNaN(price) && Number(price) > 0;
 }
 
 function verifyYear(year) {
@@ -56,13 +61,13 @@ async function getData(e, { nameId, priceId, yearId }) {
   const price = document.getElementById(priceId);
   const year = document.getElementById(yearId);
   if (!verifyName(name.value)) {
-    return console.log("This name already exists!");
+    return changeVerifyText("warning", "This name already exists!");
   }
   if (!verifyPrice(price.value)) {
-    return console.log("Invalid price!");
+    return changeVerifyText("warning", "Invalid price!");
   }
   if (!verifyYear(year.value)) {
-    return console.log("Invalid year");
+    return changeVerifyText("warning", "Invalid year!");
   }
   const data = {
     name: name.value,
@@ -73,7 +78,7 @@ async function getData(e, { nameId, priceId, yearId }) {
   price.value = "";
   year.value = "2023";
   const response = await postData(data);
-  console.log(response.message);
+  changeVerifyText("success", response.message);
 }
 
 async function postData(dataObject) {
@@ -121,4 +126,16 @@ function createLabelFor(idFor, text) {
   return label;
 }
 
+function verifyText() {
+  const label = document.createElement("label");
+  label.id = "verifyText";
+
+  return label;
+}
+
+function changeVerifyText(type, text) {
+  const verifyLabel = document.getElementById("verifyText");
+  verifyLabel.innerHTML = text;
+  verifyLabel.className = type;
+}
 export default { addForm };

@@ -48,17 +48,17 @@ app.post("/api/carData/carName", async (req, res) => {
   const userData = req.body;
   console.log(userData.name);
   const sameName = await Car.findOne({ name: userData.name });
-  if (!sameName) {
-    res.send(JSON.stringify({ status: false }));
+  if (sameName) {
+    res.send(JSON.stringify({ status: true }));
     return;
+  } else {
+    res.send(JSON.stringify({ status: false }));
   }
-  res.send(JSON.stringify({ status: true }));
 });
 
 app.post("/api/carData", async (req, res) => {
   const userData = req.body;
-  console.log(userData);
-  res.send(JSON.stringify({ message: `got ${req.body}` }));
+  res.send(JSON.stringify({ message: `got ${userData.name}` }));
 });
 
 app.listen(port, () => {
