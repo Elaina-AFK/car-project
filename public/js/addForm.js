@@ -1,4 +1,5 @@
 import api from "./api.js";
+import util from "./util.js";
 
 function addForm() {
   const nameId = "nameField";
@@ -30,11 +31,39 @@ function addForm() {
   return form;
 }
 
+async function isAlrExist(name) {
+  const response = await api.htmlMethod("POST", "/api/carData/carName", {
+    name: name,
+  });
+  return response.status;
+}
+
+function verifyName(name) {
+  return !util.isEmpty(name) && !isAlrExist(name);
+}
+
+function verifyPrice(price) {
+  return !util.isEmpty(price) && !util.isNaN(price);
+}
+
+function verifyYear(year) {
+  return !util.isEmpty(year);
+}
+
 async function getData(e, { nameId, priceId, yearId }) {
   e.preventDefault();
   const name = document.getElementById(nameId);
   const price = document.getElementById(priceId);
   const year = document.getElementById(yearId);
+  if (!verifyName(name.value)) {
+    return console.log("This name already exists!");
+  }
+  if (!verifyPrice(price.value)) {
+    return console.log("Invalid price!");
+  }
+  if (!verifyYear(year.value)) {
+    return console.log("Invalid year");
+  }
   const data = {
     name: name.value,
     price: price.value,
