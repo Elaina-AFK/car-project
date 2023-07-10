@@ -71,14 +71,10 @@ function th(title, data) {
   if (title.type === "Number" || title.type === "Date") {
     thNode.addEventListener("click", () => {
       let sorted = util.sortNumber(data, title.keyName);
-      console.log("sorted: ", sorted);
       if (sortedState === "h2l") {
         sorted = sorted.reverse();
-        console.log("get reversed!");
-        console.log("reversed: ", sorted);
       }
       sortedState = switchState(sortedState);
-      console.log({ sortedState });
       reRenderTable(sorted);
     });
   } else if (title.type === "String") {
@@ -88,7 +84,6 @@ function th(title, data) {
         sorted = sorted.reverse();
       }
       sortedState = switchState(sortedState);
-      console.log({ sortedState });
       reRenderTable(sorted);
     });
   }
@@ -118,7 +113,6 @@ function switchState(state) {
 }
 
 function reRenderTable(sortedCarData) {
-  console.log(sortedCarData);
   const main = document.getElementById("main");
   main.innerHTML = "";
   main.appendChild(createTable(sortedCarData));
