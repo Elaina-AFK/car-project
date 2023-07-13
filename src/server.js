@@ -46,7 +46,6 @@ app.get("/api/carData", async (req, res) => {
 
 app.post("/api/carData/carName", async (req, res) => {
   const userData = req.body;
-  console.log(userData.name);
   const sameName = await Car.findOne({ name: userData.name });
   if (sameName) {
     res.send(JSON.stringify({ status: true }));
@@ -58,6 +57,7 @@ app.post("/api/carData/carName", async (req, res) => {
 
 app.post("/api/carData", async (req, res) => {
   const userData = req.body;
+  console.log(userData);
   res.send(JSON.stringify({ message: `got ${userData.name}` }));
 });
 

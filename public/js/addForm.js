@@ -60,14 +60,17 @@ async function getData(e, { nameId, priceId, yearId }) {
   const name = document.getElementById(nameId);
   const price = document.getElementById(priceId);
   const year = document.getElementById(yearId);
-  if (!verifyName(name.value)) {
-    return changeVerifyText("warning", "This name already exists!");
+  if (!(await verifyName(name.value))) {
+    changeVerifyText("warning", "This name already exists!");
+    return;
   }
   if (!verifyPrice(price.value)) {
-    return changeVerifyText("warning", "Invalid price!");
+    changeVerifyText("warning", "Invalid price!");
+    return;
   }
   if (!verifyYear(year.value)) {
-    return changeVerifyText("warning", "Invalid year!");
+    changeVerifyText("warning", "Invalid year!");
+    return;
   }
   const data = {
     name: name.value,
