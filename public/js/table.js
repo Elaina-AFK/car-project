@@ -100,7 +100,7 @@ function td(data) {
 async function getData() {
   const res = await fetch("/api/carData");
   const data = await res.json();
-  return await data;
+  return data;
 }
 
 function switchState(state) {

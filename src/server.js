@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-
+const session = require("express-session");
 // database
 mongoose.connect("mongodb://127.0.0.1:27017/test");
 const db = mongoose.connection;
@@ -28,6 +28,14 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static("public"));
+app.use(
+  session({
+    secret: "very secret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false },
+  })
+);
 
 const port = 3000;
 
