@@ -99,8 +99,13 @@ function td(data) {
 
 async function getData() {
   const res = await fetch("/api/carData");
-  const data = await res.json();
-  return data;
+  try {
+    const data = await res.json();
+    return data;
+  } catch (e) {
+    document.location.href = "/login";
+    return;
+  }
 }
 
 function switchState(state) {
