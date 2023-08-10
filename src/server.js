@@ -38,7 +38,7 @@ app.get("/", isAuthenticated, (req, res) => {
 
 app.get("/api/carData", isAuthenticated, async (req, res) => {
   const carData = await db.Car.find({}).select(
-    "name price year added modified -_id"
+    "id name price year added modified -_id"
   );
   res.send(JSON.stringify(carData));
 });
@@ -57,6 +57,17 @@ app.post("/api/carData/carName", isAuthenticated, async (req, res) => {
 app.post("/api/carData", isAuthenticated, async (req, res) => {
   const userData = req.body;
   res.send(JSON.stringify({ message: `got ${userData.name}` }));
+});
+
+app.put("/api/carData", isAuthenticated, async (req, res) => {
+  const updateData = req.body;
+});
+
+app.delete("/api/carData", isAuthenticated, async (req, res) => {
+  const id = req.body.id;
+  const deleted = await db.Car.findOneAndDelete({ id });
+  console.log(deleted);
+  deleted ? res.send({ isDeleted: true }) : res.send({ idDeleted: false });
 });
 
 app.get("/login", (req, res) => {

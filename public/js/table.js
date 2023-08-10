@@ -1,4 +1,5 @@
 import util from "./util.js";
+import api from "./api.js";
 
 let sortedState = "h2l";
 
@@ -56,21 +57,20 @@ function tbody(mainData) {
 
 function tr(eachDataObject) {
   const trNode = document.createElement("tr");
-  const values = Object.values(eachDataObject);
-  const tdNode0 = tdText(values[0]);
-  const tdNode1 = tdText(values[1]);
-  const tdNode2 = tdText(values[2]);
-  const tdNode3 = tdText(util.formatRelativeTime(values[3]));
-  const tdNode4 = tdText(util.formatRelativeTime(values[4]));
+  const tdNode0 = tdText(eachDataObject["name"]);
+  const tdNode1 = tdText(eachDataObject["price"]);
+  const tdNode2 = tdText(eachDataObject["year"]);
+  const tdNode3 = tdText(util.formatRelativeTime(eachDataObject["added"]));
+  const tdNode4 = tdText(util.formatRelativeTime(eachDataObject["modified"]));
   const editBtn = btn("Edit");
   const tdNode5 = td(editBtn);
   const deleteBtn = btn("Delete");
-  deleteBtn.addEventListener("click", () => onDelete(trNode));
+  deleteBtn.addEventListener("click", () => onDelete(eachDataObject.id));
   const tdNode6 = td(deleteBtn);
   trNode.append(tdNode0, tdNode1, tdNode2, tdNode3, tdNode4, tdNode5, tdNode6);
-  editBtn.addEventListener("click", () =>
-    onEdit(tdNode5, tdNode0, tdNode1, tdNode2)
-  );
+
+  editBtn.addEventListener("click", () => onEdit(eachDataObject.id));
+  trNode.id = eachDataObject.id;
   return trNode;
 }
 
@@ -145,7 +145,12 @@ function switchState(state) {
   }
 }
 
-function onEdit(editNode, nameNode, priceNode, yearNode) {
+function onEdit(id) {
+  const tr = document.getElementById(id);
+  const nameNode = tr.getElementsByTagName("td")[0];
+  const priceNode = tr.getElementsByTagName("td")[1];
+  const yearNode = tr.getElementsByTagName("td")[2];
+  const editNode = tr.getElementsByTagName("td")[5];
   const name = nameNode.innerHTML;
   const price = priceNode.innerHTML;
   const year = yearNode.innerHTML;
@@ -153,10 +158,15 @@ function onEdit(editNode, nameNode, priceNode, yearNode) {
   priceNode.innerHTML = "";
   yearNode.innerHTML = "";
   const nameInput = input("name", name);
+  nameInput.required = true;
   nameNode.appendChild(nameInput);
   const priceInput = input("price", price);
+  priceInput.type = "number";
+  priceInput.required = true;
   priceNode.appendChild(priceInput);
   const yearInput = input("year", year);
+  yearInput.type = "number";
+  yearInput.required = true;
   yearNode.appendChild(yearInput);
   editNode.innerHTML = "";
   const updateBtn = btn("Update");
@@ -165,7 +175,7 @@ function onEdit(editNode, nameNode, priceNode, yearNode) {
     priceNode.innerHTML = priceInput.value;
     yearNode.innerHTML = yearInput.value;
     editNode.innerHTML = "";
-    editNode.appendChild(addEditBtn(editNode, nameNode, priceNode, yearNode));
+    editNode.appendChild(addEditBtn(id));
   });
   editNode.appendChild(updateBtn);
   const cancelBtn = btn("Cancel");
@@ -175,20 +185,26 @@ function onEdit(editNode, nameNode, priceNode, yearNode) {
     priceNode.innerHTML = price;
     yearNode.innerHTML = year;
     editNode.innerHTML = "";
-    editNode.appendChild(addEditBtn(editNode, nameNode, priceNode, yearNode));
+    editNode.appendChild(addEditBtn(id));
   });
 }
 
-function addEditBtn(parentNode, nameNode, priceNode, yearNode) {
+function addEditBtn(id) {
   const editBtn = btn("Edit");
-  editBtn.addEventListener("click", () =>
-    onEdit(parentNode, nameNode, priceNode, yearNode)
-  );
+  editBtn.addEventListener("click", () => onEdit(id));
   return editBtn;
 }
 
-function onDelete(trNode) {
-  trNode.outerHTML = "";
+function onDelete(id) {
+  api.htmlMethod("DELETE", "/api/carData", { id }).then((res) => {
+    console.log(res);
+    if (res.isDeleted === true) {
+      console.log(id, " deleted!");
+      document.getElementById(id).outerHTML = "";
+    } else if (res.isDeleted === false) {
+      console.log("failed");
+    }
+  });
 }
 
 function reRenderTable(sortedCarData) {
