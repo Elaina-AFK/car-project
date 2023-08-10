@@ -1,5 +1,9 @@
 import util from "./util.js";
 import api from "./api.js";
+import addForm from "./addForm.js";
+
+const addFormDiv = document.getElementById("addForm");
+addFormDiv.appendChild(addForm.addForm());
 
 let sortedState = "h2l";
 
@@ -213,4 +217,13 @@ function reRenderTable(sortedCarData) {
   main.appendChild(createTable(sortedCarData));
 }
 
-export default { Table };
+async function refetchTable() {
+  const carData = await getData();
+  carData.forEach((car) => {
+    car["added"] = new Date(car["added"]);
+    car["modified"] = new Date(car["modified"]);
+  });
+  return createTable(carData);
+}
+
+export default { Table, refetchTable };

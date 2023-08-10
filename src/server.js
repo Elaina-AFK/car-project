@@ -56,6 +56,16 @@ app.post("/api/carData/carName", isAuthenticated, async (req, res) => {
 
 app.post("/api/carData", isAuthenticated, async (req, res) => {
   const userData = req.body;
+  const addedDate = new Date();
+  const id = Number(new Date()).toString(32);
+  console.log(userData);
+  const newCar = new db.Car({
+    ...userData,
+    added: addedDate,
+    modified: addedDate,
+    id: id,
+  });
+  await newCar.save();
   res.send(JSON.stringify({ message: `got ${userData.name}` }));
 });
 
@@ -84,7 +94,6 @@ app.post("/api/login", async (req, res) => {
   if (user) {
     req.session.user = {};
     req.session.user.username = user.username;
-    console.log({ user });
     res.send(JSON.stringify({ message: "pass", link: `/html/index.html` }));
     return;
   }
