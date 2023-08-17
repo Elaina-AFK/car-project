@@ -75,7 +75,13 @@ app.post("/api/carData", isAuthenticated, async (req, res) => {
 });
 
 app.put("/api/carData", isAuthenticated, async (req, res) => {
-  const updateData = req.body;
+  const { id, ...updateData } = req.body;
+  try {
+    await db.Car.findOneAndUpdate({ id: id }, { ...updateData });
+    res.send({ pass: true });
+  } catch (e) {
+    res.send({ pass: false });
+  }
 });
 
 app.delete("/api/carData", isAuthenticated, async (req, res) => {

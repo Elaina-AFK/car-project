@@ -174,12 +174,22 @@ function onEdit(id) {
   yearNode.appendChild(yearInput);
   editNode.innerHTML = "";
   const updateBtn = btn("Update");
-  updateBtn.addEventListener("click", () => {
-    nameNode.innerHTML = nameInput.value;
-    priceNode.innerHTML = priceInput.value;
-    yearNode.innerHTML = yearInput.value;
-    editNode.innerHTML = "";
-    editNode.appendChild(addEditBtn(id));
+  updateBtn.addEventListener("click", async () => {
+    const response = await api.htmlMethod("PUT", "/api/carData", {
+      id: id,
+      name: nameInput.value,
+      price: priceInput.value,
+      year: yearInput.value,
+    });
+    if (response.pass) {
+      nameNode.innerHTML = nameInput.value;
+      priceNode.innerHTML = priceInput.value;
+      yearNode.innerHTML = yearInput.value;
+      editNode.innerHTML = "";
+      editNode.appendChild(addEditBtn(id));
+      return;
+    }
+    console.log("Error! update failed!");
   });
   editNode.appendChild(updateBtn);
   const cancelBtn = btn("Cancel");
