@@ -3,7 +3,7 @@ import api from "./api.js";
 import addForm from "./addForm.js";
 
 const addFormDiv = document.getElementById("addForm");
-addFormDiv.appendChild(addForm.addForm());
+addFormDiv.appendChild(addForm.addForm(renderAdded));
 
 let sortedState = "h2l";
 
@@ -211,19 +211,25 @@ function onDelete(id) {
   });
 }
 
-function reRenderTable(sortedCarData) {
+function reRenderTable(data) {
   const main = document.getElementById("main");
   main.innerHTML = "";
-  main.appendChild(createTable(sortedCarData));
+  main.appendChild(createTable(data));
 }
 
-async function refetchTable() {
-  const carData = await getData();
-  carData.forEach((car) => {
-    car["added"] = new Date(car["added"]);
-    car["modified"] = new Date(car["modified"]);
-  });
-  return createTable(carData);
+// async function refetchTable() {
+//   const carData = await getData();
+//   carData.forEach((car) => {
+//     car["added"] = new Date(car["added"]);
+//     car["modified"] = new Date(car["modified"]);
+//   });
+//   reRenderTable(carData);
+// }
+
+function renderAdded(newData) {
+  const main = document.getElementById("main");
+  const tbody = main.getElementsByTagName("tbody");
+  tbody[0].appendChild(tr(newData));
 }
 
-export default { Table, refetchTable };
+export default { Table };

@@ -1,7 +1,7 @@
 import api from "./api.js";
 import util from "./util.js";
 
-function addForm() {
+function addForm(addToTable) {
   const nameId = "nameField";
   const priceId = "priceField";
   const yearId = "yearOption";
@@ -28,9 +28,10 @@ function addForm() {
     verifyTextNode
   );
 
-  form.addEventListener("submit", async (e) =>
-    getData(e, { nameId, priceId, yearId })
-  );
+  form.addEventListener("submit", async (e) => {
+    const newData = await getData(e, { nameId, priceId, yearId });
+    addToTable(newData);
+  });
 
   return form;
 }
@@ -81,7 +82,15 @@ async function getData(e, { nameId, priceId, yearId }) {
   price.value = "";
   year.value = "2023";
   const response = await postData(data);
-  changeVerifyText("success", response.message);
+  if (response.pass) {
+    changeVerifyText("success", response.message);
+    return {
+      ...data,
+      id: response.data.id,
+      added: new Date(response.data.added),
+      modified: new Date(response.data.modified),
+    };
+  }
 }
 
 async function postData(dataObject) {

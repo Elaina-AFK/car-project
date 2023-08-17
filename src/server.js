@@ -66,7 +66,12 @@ app.post("/api/carData", isAuthenticated, async (req, res) => {
     id: id,
   });
   await newCar.save();
-  res.send(JSON.stringify({ message: `got ${userData.name}` }));
+  res.send(
+    JSON.stringify({
+      pass: true,
+      data: { id: id, added: addedDate, modified: addedDate },
+    })
+  );
 });
 
 app.put("/api/carData", isAuthenticated, async (req, res) => {
