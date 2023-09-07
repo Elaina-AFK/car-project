@@ -15,6 +15,14 @@ const isAuthenticated = (req, res, next) => {
   return res.redirect("/login");
 };
 
+const isAuthorized = (req, res, next) => {
+  if (req.session.user.role === "admin") {
+    next();
+    return;
+  }
+  return res.status(401).send("Unauthorized");
+};
+
 // api
 const app = express();
 
@@ -87,7 +95,6 @@ app.put("/api/carData", isAuthenticated, async (req, res) => {
 app.delete("/api/carData", isAuthenticated, async (req, res) => {
   const id = req.body.id;
   const deleted = await db.Car.findOneAndDelete({ id });
-  console.log(deleted);
   deleted ? res.send({ isDeleted: true }) : res.send({ idDeleted: false });
 });
 
@@ -105,6 +112,8 @@ app.post("/api/login", async (req, res) => {
   if (user) {
     req.session.user = {};
     req.session.user.username = user.username;
+    req.session.user.role = user.role;
+    console.log(user.role);
     res.send(JSON.stringify({ message: "pass", link: `/html/index.html` }));
     return;
   }
@@ -114,6 +123,15 @@ app.post("/api/login", async (req, res) => {
 app.get("/api/logout", (req, res) => {
   req.session.destroy();
   return res.send(JSON.stringify({ message: "logout!" }));
+});
+
+app.get("/admin", isAuthenticated, isAuthorized, (req, res) => {
+  return res.sendFile(__dirname + "/html/admin.html");
+});
+
+app.get("/api/member", isAuthenticated, isAuthorized, async (req, res) => {
+  const user = await db.Member.find().select("id username role -_id");
+  return res.send(user);
 });
 
 app.listen(port, () => {
